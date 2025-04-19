@@ -1,0 +1,47 @@
+{
+  "method": "bayes",
+  "metric": {
+    "name": "val/acc",
+    "goal": "maximize"
+  },
+  "parameters": {
+    "in_channels": {
+      "value": 3
+    },
+    "out_channels": {
+      "values": [32, 64, 128]
+    },
+    "kernel_size": {
+      "values": [3, 5, 7]
+    },
+    "batch_norm": {
+      "values": [true, false]
+    },
+    "activation": {
+      "values": ["relu", "gelu", "silu", "mish"]
+    },
+    "filter_strategy": {
+      "values": ["same", "double", "half"]
+    },
+    "dropout": {
+      "values": [0.0, 0.1, 0.2]
+    },
+    "hidden_size": {
+      "values": [128, 256, 512]
+    },
+    "batch_size": {
+      "values": [64, 128, 256]
+    },
+    "augmentation": {
+      "values": [true, false]
+    },
+    "learning_rate": {
+      "distribution": "uniform",
+      "min": 1e-5,
+      "max": 1e-3
+    },
+    "n_epochs": {
+      "values": [10, 15, 20]
+    }
+  }
+}

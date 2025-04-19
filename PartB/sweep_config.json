@@ -1,0 +1,57 @@
+{
+    "method": "bayes",
+    "metric": {
+        "name": "val/acc",
+        "goal": "maximize"
+    },
+    "parameters": {
+        "batch_size": {
+            "values": [
+                32,
+                64,
+                128
+            ]
+        },
+        "learning_rate": {
+            "distribution": "uniform",
+            "min": 1e-5,
+            "max": 1e-3
+        },
+        "d_model": {
+            "values": [
+                128,
+                256,
+                512
+            ]
+        },
+        "n_layers": {
+            "values": [
+                2,
+                4,
+                6
+            ]
+        },
+        "d_ff": {
+            "values": [
+                512,
+                1024
+            ]
+        },
+        "augmentation": {
+            "values": [
+                true,
+                false
+            ]
+        },
+        "freeze_layers": {
+            "values": [
+                "conv1",
+                "bn1",
+                "layer1",
+                "layer2",
+                "layer3",
+                "layer4"
+            ]
+        }
+    }
+}
