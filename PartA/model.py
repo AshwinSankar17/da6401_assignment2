@@ -13,6 +13,16 @@ from typing import Any, Literal, Optional
 
 
 def get_datasets(augmentation: bool = True, path: str = "../inaturalist_12K/"):
+    """
+    Loads and preprocesses the iNaturalist 12K dataset with optional data augmentation.
+
+    Args:
+        augmentation (bool): Whether to apply data augmentation. Defaults to True.
+        path (str): Path to the root directory containing 'train' and 'val' folders. Defaults to "../inaturalist_12K/".
+
+    Returns:
+        Tuple[Dataset, Dataset, Dataset]: A tuple containing the training, validation, and test datasets.
+    """
     ts = [transforms.Resize((256, 256))]
     if augmentation:
         ts += [transforms.AutoAugment()]
@@ -38,6 +48,20 @@ def get_datasets(augmentation: bool = True, path: str = "../inaturalist_12K/"):
 
 
 class ConvolutionBlock(nn.Module):
+    """
+    A convolutional block consisting of Conv2D, optional BatchNorm2D, activation, 
+    and MaxPooling layers. Supports multiple activation functions and custom initialization.
+
+    Args:
+        in_channels (int): Number of input channels.
+        out_channels (int): Number of output channels.
+        kernel_size (int): Size of the convolution kernel.
+        stride (int): Stride of the convolution.
+        padding (int): Padding added to both sides of the input.
+        batch_norm (bool): Whether to include batch normalization. Defaults to True.
+        activation (str): Activation function to use ("relu", "gelu", "silu", or "mish"). Defaults to "relu".
+        dropout (float, optional): Dropout probability. Currently unused.
+    """
     def __init__(
         self,
         in_channels: int,
@@ -88,6 +112,20 @@ class ConvolutionBlock(nn.Module):
 
 
 class CNNBase(pl.LightningModule):
+    """
+    A modular CNN backbone built from stacked ConvolutionBlocks with adjustable output scaling strategy.
+
+    Args:
+        in_channels (int): Initial number of input channels.
+        out_channels (int): Number of output channels for the first convolution block.
+        kernel_size (int): Size of the convolution kernel.
+        stride (int): Stride of the convolution.
+        padding (int): Padding added to both sides of the input.
+        batch_norm (bool): Whether to include batch normalization. Defaults to True.
+        activation (str): Activation function to use. Defaults to "relu".
+        kernel_strategy (str): Strategy to scale output channels across blocks ("same", "double", or "half").
+        dropout (float): Dropout probability. Currently unused.
+    """
     def __init__(
         self,
         in_channels: int = 3,
@@ -126,6 +164,17 @@ class CNNBase(pl.LightningModule):
 
 
 class ClassifierHead(pl.LightningModule):
+    """
+    A simple fully-connected classification head with one hidden layer, optional dropout,
+    and configurable activation.
+
+    Args:
+        num_classes (int): Number of output classes.
+        in_size (int): Flattened input size to the classifier.
+        hidden_size (int): Size of the hidden layer.
+        dropout (float): Dropout probability before the final layer. Defaults to 0.0.
+        activation (str): Activation function to use. Defaults to "relu".
+    """
     def __init__(
         self,
         num_classes: int,
@@ -170,6 +219,28 @@ class ClassifierHead(pl.LightningModule):
 
 
 class NeuralNetwork(pl.LightningModule):
+    """
+    A full CNN classification model combining convolutional feature extraction and a classifier head.
+    Handles training, validation, and test logic using PyTorch Lightning.
+
+    Args:
+        in_channels (int): Number of input channels (e.g., 3 for RGB).
+        out_channels (int): Initial number of output channels in CNN.
+        kernel_size (int): Size of the convolution kernels.
+        stride (int): Stride of the convolutions.
+        padding (int): Padding size for convolutions.
+        learning_rate (float): Learning rate for the optimizer.
+        batch_norm (bool): Whether to include batch normalization.
+        activation (str): Activation function to use.
+        kernel_strategy (str): Channel scaling strategy across CNN layers.
+        dropout (float): Dropout rate in the classifier head.
+        num_classes (int): Number of output classes.
+        hidden_size (int): Size of the hidden layer in the classifier head.
+        dataset_path (str): Path to the dataset directory.
+        num_workers (int): Number of subprocesses used for data loading.
+        batch_size (int): Batch size for training and evaluation.
+        augmentation (bool): Whether to apply data augmentation to the training set.
+    """
     def __init__(
         self,
         in_channels: int,

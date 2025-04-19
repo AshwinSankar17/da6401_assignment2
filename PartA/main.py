@@ -41,6 +41,9 @@ def seed_everything(seed: int = 42):
 
 
 def main(args):
+    """
+        Train a neural network using the specified hyperparameters.
+    """
     nn = NeuralNetwork(
         in_channels=args.in_channels,
         out_channels=args.out_channels,
@@ -100,6 +103,9 @@ def main(args):
 
 
 def sweep(args):
+    """
+        Run sweep with the provided sweep configuration.
+    """
     wandb.init()
     config = wandb.config
     logger = pl.loggers.WandbLogger()

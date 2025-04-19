@@ -18,6 +18,16 @@ from typing import Any
 
 
 def get_datasets(augmentation: bool = True, path: str = "../inaturalist_12K/"):
+    """
+    Loads and preprocesses the iNaturalist 12K dataset with optional data augmentation.
+
+    Args:
+        augmentation (bool): Whether to apply data augmentation. Defaults to True.
+        path (str): Path to the root directory containing 'train' and 'val' folders. Defaults to "../inaturalist_12K/".
+
+    Returns:
+        Tuple[Dataset, Dataset, Dataset]: A tuple containing the training, validation, and test datasets.
+    """
     normalize = transforms.Normalize(
         mean=[0, 0, 0], std=[1, 1, 1]
     )
@@ -93,6 +103,21 @@ def freeze_up_to_block(model, last_block_to_freeze):
 
 
 class FineTuneModel(pl.LightningModule):
+    """
+    A fine-tuning wrapper around ResNet-50 using PyTorch Lightning.
+
+    This model freezes all layers up to a specified block and replaces 
+    the final fully connected layer to adapt to a new classification task.
+
+    Args:
+        batch_size (int): Batch size for training and evaluation.
+        learning_rate (float): Learning rate for the optimizer.
+        freeze_block (str): Name of the last block to freeze in ResNet ('layer1', 'layer2', etc.).
+        num_classes (int): Number of output classes for classification.
+        augmentation (bool): Whether to apply data augmentation.
+        dataset_path (str): Path to the dataset directory.
+        num_workers (int): Number of workers for data loading.
+    """
     def __init__(
         self,
         batch_size: int = 32,
